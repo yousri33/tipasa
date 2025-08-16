@@ -1,14 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Star, Heart, Share2, Truck, Shield, RotateCcw, Zap, Award, Clock } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { getProductById } from '@/lib/airtable';
-import type { Product } from '@/lib/airtable';
 import ProductDetailClient from '@/components/ProductDetailClient';
 
 interface ProductDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {

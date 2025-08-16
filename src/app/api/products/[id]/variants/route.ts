@@ -6,11 +6,12 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     console.log('🔍 Variants API called')
-    console.log('📦 Product ID:', params.id)
+    console.log('📦 Product ID:', id)
     
     // For now, return empty variants array since we're not using variants
     // This prevents the 404 error that was causing issues

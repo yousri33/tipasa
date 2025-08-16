@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { preloadCategoryImages } from '@/lib/airtable-images';
@@ -14,7 +15,6 @@ interface Category {
 }
 
 export default function FeaturedCategories() {
-  const [categoryImages, setCategoryImages] = useState<{[key: string]: string}>({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const featuredCategories: Category[] = [
@@ -44,8 +44,7 @@ export default function FeaturedCategories() {
   useEffect(() => {
     const loadCategoryImages = async () => {
       try {
-        const images = await preloadCategoryImages();
-        setCategoryImages(images);
+        await preloadCategoryImages();
         setImagesLoaded(true);
       } catch (error) {
         console.error('Failed to load category images:', error);
@@ -77,10 +76,11 @@ export default function FeaturedCategories() {
                 {/* Image Container */}
                 <div className="relative h-64 overflow-hidden">
                   {(imagesLoaded && category.image !== '/api/placeholder/400/300') || category.image === '/MODEST.JPG' || category.image === '/BURKINI.png' ? (
-                    <img 
+                    <Image 
                       src={category.image} 
                       alt={category.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                       }}

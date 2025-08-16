@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -79,10 +80,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           <div className="space-y-6">
             <div className="aspect-square bg-gradient-to-br from-white to-gray-50 rounded-3xl overflow-hidden relative group shadow-2xl border border-white/20">
               {product.image ? (
-                <img 
+                <Image 
                   src={product.image} 
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 ease-out"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-all duration-700 ease-out"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-8xl bg-gradient-to-br from-rose-100 to-purple-100">
@@ -113,10 +115,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <div className="grid grid-cols-3 gap-4">
                 {product.images.slice(1, 4).map((img, index) => (
                   <div key={index} className="aspect-square bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden shadow-lg border border-white/20 group cursor-pointer">
-                    <img 
+                    <Image 
                       src={img} 
                       alt={`${product.name} ${index + 2}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-all duration-500 ease-out"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-all duration-500 ease-out"
                     />
                   </div>
                 ))}

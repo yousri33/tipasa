@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { X, MapPin, Phone, User, Truck, Building, Ruler } from 'lucide-react'
+import Image from 'next/image'
+import { MapPin, Phone, User, Truck, Building, Ruler } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 
 interface OrderModalProps {
@@ -141,11 +142,14 @@ export default function OrderModal({ isOpen, onClose, product, onSubmit }: Order
         {/* Product Info */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center gap-4">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-16 h-16 object-cover rounded-lg"
-            />
+            <div className="relative w-16 h-16">
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
             <div>
               <h3 className="font-semibold text-gray-900">{product.name}</h3>
               <p className="text-lg font-bold text-rose-600">{product.price} DZD</p>

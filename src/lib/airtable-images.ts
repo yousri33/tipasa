@@ -1,28 +1,9 @@
-interface AirtableProduct {
-  id: string;
-  fields: {
-    'Product Name': string;
-    Category: string;
-    'Product Images'?: Array<{
-      id: string;
-      url: string;
-      thumbnails: {
-        large: {
-          url: string;
-          width: number;
-          height: number;
-        };
-      };
-    }>;
-  };
-}
-
 interface CategoryImageMap {
   [key: string]: string;
 }
 
 // Cache for category images to avoid repeated API calls
-let categoryImageCache: CategoryImageMap = {};
+const categoryImageCache: CategoryImageMap = {};
 let cacheTimestamp = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 

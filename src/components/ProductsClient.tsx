@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Heart, ShoppingCart, Search, Filter, SortAsc } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import OrderModal, { OrderData } from './OrderModal';
 import { toast } from '@/components/ui/toast';
 
@@ -86,11 +87,6 @@ function useProductActions() {
     }).format(price);
   }, []);
 
-  const handleAddToCart = useCallback((product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Adding to cart:', product.name);
-  }, []);
-
   const getCategoryLabel = useCallback((category: string) => {
     const categoryMap: Record<string, string> = {
       'Burkinis': 'بركيني',
@@ -101,7 +97,7 @@ function useProductActions() {
     return categoryMap[category] || category;
   }, []);
 
-  return { formatPrice, handleAddToCart, getCategoryLabel };
+  return { formatPrice, getCategoryLabel };
 }
 
 // Components
@@ -209,11 +205,11 @@ function ProductCard({
         <div className="aspect-[4/5] bg-gradient-to-br from-slate-50 via-white to-slate-100 relative overflow-hidden rounded-t-2xl">
           {/* Product image or placeholder */}
           {product.image ? (
-            <img 
+            <Image 
               src={product.image} 
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="lazy"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -339,7 +335,7 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
   const [orderModal, setOrderModal] = useState<{ isOpen: boolean; product: Product | null }>({ isOpen: false, product: null });
 
   const filteredProducts = useProductFilters(initialProducts, filters);
-  const { formatPrice, handleAddToCart, getCategoryLabel } = useProductActions();
+  const { formatPrice, getCategoryLabel } = useProductActions();
 
   const handleFiltersChange = useCallback((newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));

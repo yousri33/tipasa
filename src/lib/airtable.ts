@@ -21,6 +21,34 @@ function getTables() {
   };
 }
 
+// Airtable-specific types
+interface AirtableAttachment {
+  id: string;
+  url: string;
+  filename: string;
+  size: number;
+  type: string;
+  thumbnails?: {
+    small: { url: string; width: number; height: number };
+    large: { url: string; width: number; height: number };
+    full: { url: string; width: number; height: number };
+  };
+}
+
+interface AirtableProductFields {
+  'Product Name': string;
+  Description: string;
+  Price: number;
+  Category: string;
+  Size?: string;
+  Color?: string | string[];
+  'Stock Quantity': number;
+  SKU?: string;
+  'Product Images'?: AirtableAttachment[];
+}
+
+
+
 // Types
 export interface Product {
   id: string;
@@ -88,23 +116,24 @@ export async function getProducts(): Promise<Product[]> {
     const records = await tables.products.select().all();
     console.log('✅ API call successful, received', records.length, 'records');
     
-    return records.map((record: any) => {
-        const productImages = record.fields['Product Images'] as any[];
-        const colors = record.fields['Color'] as string[];
+    return records.map((record) => {
+        const fields = record.fields as unknown as AirtableProductFields;
+        const productImages = fields['Product Images'];
+        const colors = fields['Color'];
         
         return {
           id: record.id,
-          name: record.fields['Product Name'] as string,
-          description: record.fields.Description as string,
-          price: record.fields.Price as number,
-          category: record.fields.Category as string,
-          size: record.fields.Size as string || undefined,
-          color: Array.isArray(colors) ? colors[0] : (colors as string) || undefined,
+          name: fields['Product Name'],
+          description: fields.Description,
+          price: fields.Price,
+          category: fields.Category,
+          size: fields.Size || undefined,
+          color: Array.isArray(colors) ? colors[0] : colors || undefined,
           colors: Array.isArray(colors) ? colors : (colors ? [colors] : undefined),
-          stock: record.fields['Stock Quantity'] as number || 0,
-          sku: record.fields.SKU as string || undefined,
+          stock: fields['Stock Quantity'] || 0,
+          sku: fields.SKU || undefined,
           image: productImages && productImages.length > 0 ? productImages[0]?.url : undefined,
-          images: productImages ? productImages.map((img: any) => img.url) : undefined
+          images: productImages ? productImages.map((img) => img.url) : undefined
         };
       });
   } catch (error) {
@@ -122,22 +151,23 @@ export async function getProductById(id: string): Promise<Product | null> {
     
     const record = await products.find(id);
     
-    const productImages = record.fields['Product Images'] as any[];
-    const colors = record.fields['Color'] as string[];
+    const fields = record.fields as unknown as AirtableProductFields;
+    const productImages = fields['Product Images'];
+    const colors = fields['Color'];
     
     return {
       id: record.id,
-      name: record.fields['Product Name'] as string,
-      description: record.fields.Description as string,
-      price: record.fields.Price as number,
-      category: record.fields.Category as string,
-      size: record.fields.Size as string || undefined,
-      color: Array.isArray(colors) ? colors[0] : (colors as string) || undefined,
+      name: fields['Product Name'],
+      description: fields.Description,
+      price: fields.Price,
+      category: fields.Category,
+      size: fields.Size || undefined,
+      color: Array.isArray(colors) ? colors[0] : colors || undefined,
       colors: Array.isArray(colors) ? colors : (colors ? [colors] : undefined),
-      stock: record.fields['Stock Quantity'] as number,
-      sku: record.fields.SKU as string || undefined,
+      stock: fields['Stock Quantity'],
+      sku: fields.SKU || undefined,
       image: productImages && productImages.length > 0 ? productImages[0].url : undefined,
-      images: productImages ? productImages.map((img: any) => img.url) : undefined
+      images: productImages ? productImages.map((img) => img.url) : undefined
     };
   } catch (error) {
     console.error('Error fetching product by ID:', error);
@@ -152,23 +182,24 @@ export async function getProductsByCategory(category: string): Promise<Product[]
       filterByFormula: `{Category} = '${category}'`
     }).all();
   
-    return records.map((record: any) => {
-      const productImages = record.fields['Product Images'] as any[];
-      const colors = record.fields['Color'] as string[];
+    return records.map((record) => {
+      const fields = record.fields as unknown as AirtableProductFields;
+      const productImages = fields['Product Images'];
+      const colors = fields['Color'];
       
       return {
         id: record.id,
-        name: record.fields['Product Name'] as string,
-        description: record.fields.Description as string,
-        price: record.fields.Price as number,
-        category: record.fields.Category as string,
-        size: record.fields.Size as string || undefined,
-        color: Array.isArray(colors) ? colors[0] : (colors as string) || undefined,
+        name: fields['Product Name'],
+        description: fields.Description,
+        price: fields.Price,
+        category: fields.Category,
+        size: fields.Size || undefined,
+        color: Array.isArray(colors) ? colors[0] : colors || undefined,
         colors: Array.isArray(colors) ? colors : (colors ? [colors] : undefined),
-        stock: record.fields['Stock Quantity'] as number || 0,
-        sku: record.fields.SKU as string || undefined,
+        stock: fields['Stock Quantity'] || 0,
+        sku: fields.SKU || undefined,
         image: productImages && productImages.length > 0 ? productImages[0]?.url : undefined,
-        images: productImages ? productImages.map((img: any) => img.url) : undefined
+        images: productImages ? productImages.map((img) => img.url) : undefined
       };
     });
   } catch (error) {

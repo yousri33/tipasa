@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, Heart, Star, Award, Users, ArrowRight, Play, Sparkles } from 'lucide-react';
@@ -74,10 +75,11 @@ export default function HeroSection() {
             <div className="relative aspect-square">
               <div className="absolute inset-0 bg-gradient-to-br from-rose-200 via-purple-200 to-cyan-200 rounded-3xl transform rotate-6 animate-pulse"></div>
               <div className="relative bg-gradient-to-br from-rose-100 via-purple-100 to-cyan-100 rounded-3xl flex items-center justify-center aspect-square shadow-2xl overflow-hidden">
-                <img 
+                <Image 
                   src="/background.png" 
                   alt="Helena Brand Collection" 
-                  className="w-full h-full object-cover rounded-3xl hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover rounded-3xl hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
