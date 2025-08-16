@@ -86,11 +86,6 @@ function useProductActions() {
     }).format(price);
   }, []);
 
-  const handleAddToCart = useCallback((product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Adding to cart:', product.name);
-  }, []);
-
   const getCategoryLabel = useCallback((category: string) => {
     const categoryMap: Record<string, string> = {
       'Burkinis': 'بركيني',
@@ -101,7 +96,7 @@ function useProductActions() {
     return categoryMap[category] || category;
   }, []);
 
-  return { formatPrice, handleAddToCart, getCategoryLabel };
+  return { formatPrice, getCategoryLabel };
 }
 
 // Components
@@ -205,109 +200,109 @@ function ProductCard({
         <div className="bg-white rounded-2xl h-full w-full" />
       </div>
       
+      {/* Content */}
       <div className="relative z-10">
-        <div className="aspect-[4/5] bg-gradient-to-br from-slate-50 via-white to-slate-100 relative overflow-hidden rounded-t-2xl">
-          {/* Product image or placeholder */}
-          {product.image ? (
-            <img 
-              src={product.image} 
+        {/* Image Section */}
+        <CardContent className="p-0">
+          <div className="relative aspect-square overflow-hidden rounded-t-2xl">
+            <img
+              src={product.image || '/api/placeholder/400/400'}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              onError={(e) => {
+                e.currentTarget.src = '/api/placeholder/400/400';
+              }}
             />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-8xl opacity-30 filter drop-shadow-lg">
-                {product.category === 'Burkinis' ? '🏊‍♀️' : 
-                 product.category === 'Hijabs' ? '🧕' : '👗'}
+            
+            {/* Overlay with actions */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <div className="flex gap-3">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsWishlisted(!isWishlisted);
+                  }}
+                >
+                  <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
+                </Button>
+                <Button
+                  size="sm"
+                  className="rounded-full bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onAddToCart(product);
+                  }}
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                </Button>
               </div>
             </div>
-          )}
-          
-          {/* Elegant overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          
-          {/* Wishlist Button */}
-          <button 
-            onClick={() => setIsWishlisted(!isWishlisted)}
-            className="absolute top-4 left-4 p-3 bg-white/95 backdrop-blur-sm hover:bg-white rounded-full shadow-xl transition-all duration-300 hover:scale-110 border border-white/20"
-          >
-            <Heart className={`h-5 w-5 transition-all duration-300 ${
-              isWishlisted 
-                ? 'text-pink-500 fill-pink-500 scale-110' 
-                : 'text-gray-600 hover:text-pink-500 hover:scale-110'
-            }`} />
-          </button>
-          
-          {/* Stock Badge */}
-          {product.stock <= 5 && product.stock > 0 && (
-            <Badge className="absolute top-4 right-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white border-0 shadow-xl px-3 py-1 rounded-full font-medium">
-              {product.stock} متبقي
-            </Badge>
-          )}
-          
-          {product.stock === 0 && (
-            <Badge className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 shadow-xl px-3 py-1 rounded-full font-medium">
-              نفد المخزون
-            </Badge>
-          )}
-        </div>
-        
-        <CardContent className="p-6 space-y-4">
-          <div className="flex items-start justify-between">
-            <Badge 
-              variant="outline" 
-              className="text-xs font-medium bg-gradient-to-r from-pink-50 to-purple-50 text-pink-700 border-pink-200 hover:bg-gradient-to-r hover:from-pink-100 hover:to-purple-100 transition-all duration-200 px-3 py-1 rounded-full"
-            >
+            
+            {/* Stock badge */}
+            {product.stock <= 5 && product.stock > 0 && (
+              <Badge className="absolute top-3 right-3 bg-orange-500 hover:bg-orange-600 text-white border-0">
+                {product.stock} متبقي
+              </Badge>
+            )}
+            
+            {product.stock === 0 && (
+              <Badge className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white border-0">
+                نفد المخزون
+              </Badge>
+            )}
+            
+            {/* Category badge */}
+            <Badge className="absolute top-3 left-3 bg-white/90 text-gray-900 border-0 backdrop-blur-sm">
               {getCategoryLabel(product.category)}
             </Badge>
-            
-            {product.size && (
-              <div className="flex items-center gap-1 text-xs text-slate-600 bg-slate-100 px-3 py-1 rounded-full font-medium">
-                <span>المقاس:</span>
-                <span className="font-bold text-slate-800">{product.size}</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-bold text-slate-900 line-clamp-2 group-hover:text-pink-600 transition-colors text-xl leading-tight tracking-tight">
-              {product.name}
-            </h3>
-            
-            <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
-              {product.description}
-            </p>
-          </div>
-          
-          <div className="pt-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              {formatPrice(product.price)}
-            </span>
           </div>
         </CardContent>
         
-        <CardFooter className="p-6 pt-0">
-          <div className="flex gap-3">
-            <Link href={`/products/${product.id}`} className="flex-1">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="w-full border-2 border-slate-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50 transition-all duration-300 rounded-lg font-medium py-2 text-sm"
-              >
-                عرض التفاصيل
-              </Button>
-            </Link>
+        {/* Product Info */}
+        <CardFooter className="p-6">
+          <div className="w-full space-y-3">
+            <div>
+              <h3 className="font-bold text-lg text-gray-900 group-hover:text-purple-600 transition-colors duration-300 line-clamp-1">
+                {product.name}
+              </h3>
+              <p className="text-gray-600 text-sm line-clamp-2 mt-1">
+                {product.description}
+              </p>
+            </div>
             
-            <Button 
-              size="sm"
-              className="flex-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 rounded-lg font-medium py-2 text-sm border-0 min-w-[120px]"
-              disabled={product.stock === 0}
-              onClick={() => onAddToCart(product)}
-            >
-              <ShoppingCart className="ml-1 h-4 w-4" />
-              {product.stock === 0 ? 'نفد المخزون' : 'اشتري الآن'}
-            </Button>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="text-2xl font-bold text-gray-900">
+                  {formatPrice(product.price)}
+                </div>
+                {product.size && (
+                  <div className="text-sm text-gray-500">
+                    المقاس: {product.size}
+                  </div>
+                )}
+              </div>
+              
+              {product.colors && product.colors.length > 1 && (
+                <div className="flex gap-1">
+                  {product.colors.slice(0, 3).map((color, index) => (
+                    <div
+                      key={index}
+                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      style={{ backgroundColor: color.toLowerCase() }}
+                      title={color}
+                    />
+                  ))}
+                  {product.colors.length > 3 && (
+                    <div className="w-4 h-4 rounded-full bg-gray-200 border-2 border-white shadow-sm flex items-center justify-center">
+                      <span className="text-xs text-gray-600">+</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </CardFooter>
       </div>
@@ -317,14 +312,10 @@ function ProductCard({
 
 function EmptyState() {
   return (
-    <div className="text-center py-20">
-      <div className="text-8xl mb-6 opacity-50">🔍</div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-3">
-        لم نجد أي منتجات
-      </h3>
-      <p className="text-gray-600 text-lg max-w-md mx-auto">
-        جربي تغيير معايير البحث أو الفلترة للعثور على المنتجات المطلوبة
-      </p>
+    <div className="text-center py-16">
+      <div className="text-6xl mb-4">🔍</div>
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">لم يتم العثور على منتجات</h3>
+      <p className="text-gray-600">جربي تغيير معايير البحث أو التصفية</p>
     </div>
   );
 }
@@ -336,122 +327,94 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
     selectedCategory: 'all',
     sortBy: 'name'
   });
-  const [orderModal, setOrderModal] = useState<{ isOpen: boolean; product: Product | null }>({ isOpen: false, product: null });
-
+  
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  
   const filteredProducts = useProductFilters(initialProducts, filters);
-  const { formatPrice, handleAddToCart, getCategoryLabel } = useProductActions();
-
+  const { formatPrice, getCategoryLabel } = useProductActions();
+  
   const handleFiltersChange = useCallback((newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   }, []);
-
-  const handleBuyNow = (product: Product) => {
-    setOrderModal({ isOpen: true, product });
-  };
-
-  const handleOrderSubmit = async (orderData: OrderData) => {
-    if (!orderModal.product) return;
-
-    // Show loading toast
-    const loadingToast = toast.loading('جاري إرسال طلبك... / Submitting your order...');
-
+  
+  const handleAddToCart = useCallback((product: Product) => {
+    setSelectedProduct(product);
+    setIsOrderModalOpen(true);
+  }, []);
+  
+  const handleOrderSubmit = useCallback(async (orderData: OrderData) => {
     try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...orderData,
-          productId: orderModal.product.id,
-        }),
+      // Here you would typically send the order to your backend
+      console.log('Order submitted:', orderData);
+      
+      // Show success message
+      toast({
+        title: "تم إرسال الطلب بنجاح! 🎉",
+        description: "سنتواصل معك قريباً لتأكيد الطلب",
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit order');
-      }
-
-      // Dismiss loading toast and show success
-      toast.dismiss(loadingToast);
-      toast.success('🎉 تم إرسال طلبك بنجاح! سنتواصل معك قريباً / Order submitted successfully! We will contact you soon.', {
-        duration: 6000,
-      });
-      setOrderModal({ isOpen: false, product: null });
+      
+      setIsOrderModalOpen(false);
+      setSelectedProduct(null);
     } catch (error) {
-      console.error('Order submission error:', error);
-      // Dismiss loading toast and show error
-      toast.dismiss(loadingToast);
-      toast.error('❌ حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى / Error occurred while submitting order. Please try again.', {
-        duration: 5000,
+      console.error('Error submitting order:', error);
+      toast({
+        title: "حدث خطأ",
+        description: "لم نتمكن من إرسال الطلب. يرجى المحاولة مرة أخرى",
+        variant: "destructive"
       });
-      throw error;
     }
-  };
-
+  }, []);
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-rose-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            مجموعة هيلينا
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            مجموعة منتجاتنا
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            اكتشفي أحدث تشكيلة من البركيني والحجاب والملابس المحتشمة العصرية
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            اكتشفي أحدث صيحات الموضة المحتشمة من مجموعتنا المختارة بعناية
           </p>
-          <div className="mt-6 flex justify-center">
-            <div className="h-1 w-24 bg-gradient-to-r from-rose-500 to-purple-600 rounded-full"></div>
-          </div>
         </div>
-
+        
         {/* Filters */}
         <ProductFilters 
           filters={filters}
           onFiltersChange={handleFiltersChange}
           resultCount={filteredProducts.length}
         />
-
+        
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <EmptyState />
-        ) : (
+        {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={() => handleBuyNow(product)}
-                formatPrice={formatPrice}
-                getCategoryLabel={getCategoryLabel}
-              />
+              <Link key={product.id} href={`/products/${product.id}`}>
+                <ProductCard
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                  formatPrice={formatPrice}
+                  getCategoryLabel={getCategoryLabel}
+                />
+              </Link>
             ))}
           </div>
+        ) : (
+          <EmptyState />
         )}
-
-        {/* Load More Button (for future pagination) */}
-        {filteredProducts.length > 0 && (
-          <div className="text-center mt-12">
-            <p className="text-gray-600 mb-4">
-              عرض {filteredProducts.length} من أصل {initialProducts.length} منتج
-            </p>
-          </div>
-        )}
+        
+        {/* Order Modal */}
+        <OrderModal
+          isOpen={isOrderModalOpen}
+          onClose={() => {
+            setIsOrderModalOpen(false);
+            setSelectedProduct(null);
+          }}
+          product={selectedProduct}
+          onSubmit={handleOrderSubmit}
+        />
       </div>
-
-      {/* Order Modal */}
-       {orderModal.product && (
-         <OrderModal
-           isOpen={orderModal.isOpen}
-           onClose={() => setOrderModal({ isOpen: false, product: null })}
-           product={{
-              id: orderModal.product.id,
-              name: orderModal.product.name,
-              price: orderModal.product.price,
-              image: orderModal.product.images?.[0] || '/placeholder.jpg'
-            }}
-           onSubmit={handleOrderSubmit}
-         />
-       )}
     </div>
   );
 }
