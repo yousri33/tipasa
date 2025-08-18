@@ -1,4 +1,5 @@
 import Airtable from 'airtable';
+import { Product, Customer, Order, AirtableProductFields } from './types';
 
 // Initialize Airtable function (server-side only)
 function getAirtableBase() {
@@ -19,76 +20,6 @@ function getTables() {
     customers: base(process.env.NEXT_PUBLIC_CUSTOMERS_TABLE_ID!),
     orders: base(process.env.NEXT_PUBLIC_ORDERS_TABLE_ID!)
   };
-}
-
-// Airtable-specific types
-interface AirtableAttachment {
-  id: string;
-  url: string;
-  filename: string;
-  size: number;
-  type: string;
-  thumbnails?: {
-    small: { url: string; width: number; height: number };
-    large: { url: string; width: number; height: number };
-    full: { url: string; width: number; height: number };
-  };
-}
-
-interface AirtableProductFields {
-  'Product Name': string;
-  Description: string;
-  Price: number;
-  Category: string;
-  Size?: string;
-  Color?: string | string[];
-  'Stock Quantity': number;
-  SKU?: string;
-  'Product Images'?: AirtableAttachment[];
-}
-
-
-
-// Types
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  size?: string;
-  color?: string;
-  colors?: string[];
-  stock: number;
-  sku?: string;
-  image?: string;
-  images?: string[];
-}
-
-export interface Customer {
-  id?: string;
-  'Full Name': string;
-  'Email': string;
-  'Phone': string;
-  'Address': string;
-  'City': string;
-  'Country': string;
-  'Postal Code': string;
-  'Date Joined': string;
-  'Customer Notes'?: string;
-}
-
-export interface Order {
-  id?: string;
-  'Order ID': string;
-  'Customer': string[];
-  'Products': string[];
-  'Order Date': string;
-  'Order Status': string;
-  'Total Amount': number;
-  'Shipping Address': string;
-  'Payment Method': string;
-  'Order Notes'?: string;
 }
 
 // Product operations

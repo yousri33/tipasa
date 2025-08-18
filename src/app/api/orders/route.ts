@@ -18,6 +18,8 @@ interface OrderData {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 Order API called - Fixed version')
+    
     if (!AIRTABLE_API_KEY) {
       console.error('AIRTABLE_API_KEY is not configured')
       return NextResponse.json(
@@ -27,6 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     const orderData: OrderData = await request.json()
+    console.log('📦 Order data received:', orderData)
 
     // Validate required fields
     const requiredFields = ['customerName', 'phoneNumber', 'wilaya', 'commune', 'deliveryType', 'productName', 'productPrice', 'productId', 'size']
@@ -39,7 +42,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Prepare data for Airtable
+    // Enhanced logging for debugging size-related issues
+    console.log('🔍 Size value being sent:', orderData.size)
+    console.log('🔍 Size value type:', typeof orderData.size)
+    console.log('🔍 Full order data:', JSON.stringify(orderData, null, 2))
+    
+    // Ensure size is a simple string that Airtable can accept
+    let sizeValue = '';
+    if (Array.isArray(orderData.size)) {
+      // If it's an array, take the first value
+      sizeValue = orderData.size[0]?.toString() || '';
+    } else if (orderData.size) {
+      // If it's not an array but exists, convert to string
+      sizeValue = orderData.size.toString();
+    }
+    
+    console.log('🔍 Normalized size value:', sizeValue);
+    
+    // Prepare data for Airtable with the normalized size value
     const airtableData = {
       fields: {
         'Customer Name': orderData.customerName,
@@ -47,13 +67,21 @@ export async function POST(request: NextRequest) {
         'Wilaya': orderData.wilaya,
         'Commune': orderData.commune,
         'Delivery Type': orderData.deliveryType === 'home' ? 'Home Delivery' : 'Bureau (Office/Pickup Point)',
-        'Product Name': [orderData.productId], // Array of record IDs for linked records
-        'size': orderData.size,
+        'Product Name': [orderData.productId], // Use product ID as array for linked field
+        // IMPORTANT: The field name in Airtable is case-sensitive
+        // If you get an UNKNOWN_FIELD_NAME error, check the exact field name in Airtable
+        // Using 'size' (lowercase s) as confirmed in the Airtable schema
+        'size': sizeValue, // Using our normalized string value, MUST be lowercase 's'
         'Order Date': new Date().toISOString(),
         'Order Status': 'New Order'
       }
     }
-
+    
+    // Double-check that we're using lowercase 'size', not 'Size'
+    console.log('🔍 Final Airtable data:', JSON.stringify(airtableData, null, 2))
+    
+    console.log('📤 Sending to Airtable:', JSON.stringify(airtableData, null, 2))
+    
     // Send to Airtable
     const airtableResponse = await fetch(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`,
@@ -66,22 +94,38 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(airtableData),
       }
     )
+    
+    console.log('📥 Airtable response status:', airtableResponse.status)
 
     if (!airtableResponse.ok) {
       const errorText = await airtableResponse.text()
       console.error('Airtable API error:', errorText)
-      return NextResponse.json(
-        { error: 'Failed to create order in Airtable' },
-        { status: 500 }
-      )
+      try {
+        // Try to parse the error as JSON for more detailed error reporting
+        const errorJson = JSON.parse(errorText)
+        console.error('Airtable API error details:', errorJson)
+        return NextResponse.json(
+          { error: 'Failed to create order in Airtable', details: errorJson },
+          { status: 500 }
+        )
+      } catch (parseError) {
+        // If parsing fails, return the raw error text
+        return NextResponse.json(
+          { error: 'Failed to create order in Airtable', details: errorText },
+          { status: 500 }
+        )
+      }
     }
 
+    // Parse the Airtable response to get the record ID
     const airtableResult = await airtableResponse.json()
+    const orderId = airtableResult?.id || Math.random().toString(36).substr(2, 9).toUpperCase()
+    console.log('✅ Order created successfully in Airtable:', orderId)
     
     return NextResponse.json(
       { 
         success: true, 
-        orderId: airtableResult.id,
+        orderId: orderId,
         message: 'Order created successfully'
       },
       { status: 201 }

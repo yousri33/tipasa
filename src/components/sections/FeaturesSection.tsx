@@ -18,43 +18,43 @@ export default function FeaturesSection() {
   const features: Feature[] = [
     {
       icon: <Truck className="h-8 w-8" />,
-      title: 'شحن مجاني',
-      description: 'شحن مجاني لجميع الطلبات فوق 200 ريال',
+      title: 'توصيل',
+      description: 'توصيل 58 ولاية',
       color: 'from-blue-500 to-cyan-500',
       delay: 0
     },
     {
       icon: <Shield className="h-8 w-8" />,
       title: 'ضمان الجودة',
-      description: 'منتجات عالية الجودة مع ضمان الاستبدال',
+      description: 'منتجات راقية بزاف مع ضمان التبديل',
       color: 'from-green-500 to-emerald-500',
       delay: 200
     },
     {
       icon: <Heart className="h-8 w-8" />,
-      title: 'صنع بحب',
-      description: 'كل قطعة مصنوعة بعناية واهتمام فائق',
+      title: 'مصنوع بالمحبة',
+      description: 'كل قطعة مصنوعة بالعناية والاهتمام الكبير',
       color: 'from-rose-500 to-pink-500',
       delay: 400
     },
     {
       icon: <Star className="h-8 w-8" />,
       title: 'تقييم ممتاز',
-      description: 'أكثر من 10,000 عميلة راضية عن منتجاتنا',
+      description: 'أكثر من 10,000 زبونة راضية على منتجاتنا',
       color: 'from-yellow-500 to-orange-500',
       delay: 600
     },
     {
       icon: <Gift className="h-8 w-8" />,
-      title: 'هدايا مجانية',
-      description: 'هدايا مفاجئة مع كل طلب',
+      title: 'كادوات مجانية',
+      description: 'كادوات مفاجئة مع كل طلبية',
       color: 'from-purple-500 to-indigo-500',
       delay: 800
     },
     {
       icon: <Sparkles className="h-8 w-8" />,
       title: 'تصاميم حصرية',
-      description: 'تصاميم فريدة لا تجدينها في أي مكان آخر',
+      description: 'تصاميم فريدة ما تلقايهاش في أي بلاصة أخرى',
       color: 'from-pink-500 to-purple-500',
       delay: 1000
     }
@@ -82,10 +82,10 @@ export default function FeaturesSection() {
             <span className="text-sm font-medium text-purple-700">مميزاتنا</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-pink-800 bg-clip-text text-transparent mb-6">
-            لماذا تختارين هيلينا؟
+            علاش تختاري هيلينا؟
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            نحن نؤمن بأن كل امرأة تستحق الأفضل، لذلك نقدم لك تجربة تسوق استثنائية مع منتجات عالية الجودة وخدمة متميزة
+            احنا نؤمنو بلي كل مرا تستاهل الأحسن، علاش نقدملك تجربة شراء استثنائية مع منتجات راقية وخدمة ممتازة
           </p>
         </div>
         
@@ -133,10 +133,10 @@ export default function FeaturesSection() {
         {/* Stats section */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { number: '10K+', label: 'عميلة سعيدة' },
+            { number: '10K+', label: 'زبونة مبسوطة' },
             { number: '500+', label: 'منتج متنوع' },
-            { number: '99%', label: 'رضا العملاء' },
-            { number: '24/7', label: 'دعم العملاء' }
+            { number: '99%', label: 'رضا الزبائن' },
+            { number: '24/7', label: 'دعم الزبائن' }
           ].map((stat, index) => (
             <div 
               key={index} 
