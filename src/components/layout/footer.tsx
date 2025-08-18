@@ -49,7 +49,7 @@ export default function Footer() {
   const contactInfo = [
     { icon: Phone, text: '+213 123 456 789', href: 'tel:+213123456789' },
     { icon: Mail, text: 'info@helenabrand.dz', href: 'mailto:info@helenabrand.dz' },
-    { icon: MapPin, text: 'الجزائر العاصمة، الجزائر', href: null },
+    { icon: MapPin, text: 'تيبازة، الجزائر', href: null },
     { icon: Clock, text: 'الأحد - الخميس: 9:00 ص - 6:00 م', href: null },
   ];
 
