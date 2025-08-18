@@ -1,5 +1,5 @@
 import Airtable from 'airtable';
-import { Product, Customer, Order, AirtableProductFields } from './types';
+import { Product, Order, AirtableProductFields } from './types';
 
 // Initialize Airtable function (server-side only)
 function getAirtableBase() {
@@ -17,7 +17,6 @@ function getTables() {
   const base = getAirtableBase();
   return {
     products: base(process.env.NEXT_PUBLIC_PRODUCTS_TABLE_ID!),
-    customers: base(process.env.NEXT_PUBLIC_CUSTOMERS_TABLE_ID!),
     orders: base(process.env.NEXT_PUBLIC_ORDERS_TABLE_ID!)
   };
 }
@@ -160,30 +159,7 @@ export async function createProduct(productData: Omit<Product, 'id'>) {
   }
 }
 
-export async function createCustomer(customerData: Omit<Customer, 'id' | 'Date Joined'>): Promise<Customer> {
-  try {
-    const tables = getTables();
-    const record = await tables.customers.create({
-      'Full Name': customerData['Full Name'],
-      'Email': customerData['Email'],
-      'Phone': customerData['Phone'],
-      'Address': customerData['Address'],
-      'City': customerData['City'],
-      'Country': customerData['Country'],
-      'Postal Code': customerData['Postal Code'],
-      'Date Joined': new Date().toISOString(),
-      'Customer Notes': customerData['Customer Notes']
-    });
-    
-    return {
-      id: record.id,
-      ...record.fields
-    } as Customer;
-  } catch (error) {
-    console.error('Error creating customer:', error);
-    throw error;
-  }
-}
+// Customer functionality removed as Customers table doesn't exist in Airtable
 
 export async function createOrder(orderData: Omit<Order, 'id' | 'Order Date'>): Promise<Order> {
   try {
@@ -210,36 +186,7 @@ export async function createOrder(orderData: Omit<Order, 'id' | 'Order Date'>): 
   }
 }
 
-// Customer operations
-export const customerService = {
-  async create(customer: Omit<Customer, 'id' | 'Date Joined'>): Promise<Customer> {
-    const tables = getTables();
-    const record = await tables.customers.create({
-      ...customer,
-      'Date Joined': new Date().toISOString()
-    });
-    
-    return {
-      id: record.id,
-      ...record.fields
-    } as Customer;
-  },
-
-  async getByEmail(email: string): Promise<Customer | null> {
-    const tables = getTables();
-    const records = await tables.customers.select({
-      filterByFormula: `{Email} = '${email}'`,
-      maxRecords: 1
-    }).all();
-    
-    if (records.length === 0) return null;
-    
-    return {
-      id: records[0].id,
-      ...records[0].fields
-    } as Customer;
-  }
-};
+// Customer service removed as Customers table doesn't exist in Airtable
 
 // Order operations
 export const orderService = {

@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Menu, Search, Phone } from 'lucide-react';
-import { useCart } from "@/hooks/use-cart";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);

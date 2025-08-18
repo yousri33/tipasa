@@ -67,13 +67,14 @@ export async function POST(request: NextRequest) {
         'Wilaya': orderData.wilaya,
         'Commune': orderData.commune,
         'Delivery Type': orderData.deliveryType === 'home' ? 'Home Delivery' : 'Bureau (Office/Pickup Point)',
-        'Product Name': [orderData.productId], // Use product ID as array for linked field
+        // Use product ID as array for linked record field - field name is 'Product Name' in Airtable
+        'Product Name': [orderData.productId],
         // IMPORTANT: The field name in Airtable is case-sensitive
         // If you get an UNKNOWN_FIELD_NAME error, check the exact field name in Airtable
-        // Using 'size' (lowercase s) as confirmed in the Airtable schema
-        'size': sizeValue, // Using our normalized string value, MUST be lowercase 's'
+        'size': sizeValue, // Using our normalized string value - lowercase in Airtable
         'Order Date': new Date().toISOString(),
         'Order Status': 'New Order'
+        // Note: Total Amount is calculated via lookup in Airtable
       }
     }
     

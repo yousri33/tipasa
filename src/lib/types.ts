@@ -14,19 +14,7 @@ export interface Product {
   images?: string[];
 }
 
-// Customer Types
-export interface Customer {
-  id?: string;
-  'Full Name': string;
-  'Email': string;
-  'Phone': string;
-  'Address': string;
-  'City': string;
-  'Country': string;
-  'Postal Code': string;
-  'Date Joined': string;
-  'Customer Notes'?: string;
-}
+// Customer Types removed as Customers table doesn't exist in Airtable
 
 // Order Types
 export interface Order {
@@ -88,4 +76,4 @@ export interface AirtableProductFields {
   'Stock Quantity': number;
   SKU?: string;
   'Product Images'?: AirtableAttachment[];
-} 
+}
