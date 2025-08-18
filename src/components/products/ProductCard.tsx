@@ -12,6 +12,7 @@ import { formatPrice, getCategoryLabel } from '@/lib/utils';
 interface ProductCardProps {
   product: Product;
   onQuickView: (product: Product) => void;
+  onAddToCart?: (product: Product) => void;
 }
 
 export default function ProductCard({ 
