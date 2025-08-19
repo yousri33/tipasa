@@ -60,37 +60,36 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   
-  // Fetch fresh data on component mount and periodically
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsRefreshing(true);
-        const response = await fetch('/api/products', {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        });
-        if (response.ok) {
-          const freshProducts = await response.json();
-          setProducts(freshProducts);
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch('/api/products', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
-      } catch (error) {
-        console.error('Error fetching fresh products:', error);
-      } finally {
-        setIsRefreshing(false);
+      });
+      if (response.ok) {
+        const freshProducts = await response.json();
+        setProducts(freshProducts);
       }
-    };
+    } catch (error) {
+      console.error('Error refreshing products:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
-    // Fetch fresh data immediately
-    fetchProducts();
-
-    // Set up interval to refresh data every 30 seconds
-    const interval = setInterval(fetchProducts, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const handleManualRefresh = async () => {
+    await handleRefresh();
+  };
+  
+  // Fetch fresh data on component mount only
+   useEffect(() => {
+     // Fetch fresh data immediately when component mounts
+     handleRefresh();
+   }, []);
   
   const filteredProducts = useProductFilters(products, filters);
   
@@ -129,22 +128,39 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            مجموعة منتجاتنا
-            {isRefreshing && (
-              <span className="inline-block ml-3 text-sm">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 inline-block"></div>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+              مجموعة منتجاتنا
+            </h1>
+            <button
+              onClick={handleManualRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="تحديث المنتجات"
+            >
+              <div className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                  <path d="M4 4V9H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20 20V15H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L4 9M3.51 15A9 9 0 0 0 18.36 18.36L20 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium">
+                {isRefreshing ? 'جاري التحديث...' : 'تحديث'}
               </span>
-            )}
-          </h1>
+            </button>
+          </div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             اكتشفي أحدث صيحات الموضة المحتشمة من مجموعتنا المختارة بعناية
-            {isRefreshing && (
-              <span className="block text-sm text-purple-600 mt-2 font-medium">
-                جاري تحديث المنتجات...
-              </span>
-            )}
           </p>
+          {isRefreshing && (
+            <div className="mt-4">
+              <span className="inline-flex items-center gap-2 text-sm text-purple-600 font-medium">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+                جاري تحديث المنتجات من قاعدة البيانات...
+              </span>
+            </div>
+          )}
         </div>
         
         {/* Filters */}
