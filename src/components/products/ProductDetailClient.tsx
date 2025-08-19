@@ -24,7 +24,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const features = [
     { icon: Shield, title: 'جودة عالية', description: 'منسوجات ممتازة تدوم طويلاً' },
-    { icon: Truck, title: 'شحن مجاني', description: 'للطلبات فوق 5000 دينار' },
+    { icon: Truck, title: 'شحن مجاني', description: 'للطلبات فوق 7000 دينار' },
     { icon: RotateCcw, title: 'إرجاع سهل', description: '30 يوم لاسترجاع المنتج' }
   ];
 
@@ -137,8 +137,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               )}
               
               {product.stock === 0 && (
-                <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white border-0">
-                  نفد المخزون
+                <Badge className="absolute top-4 left-4 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 text-sm font-bold rounded-full animate-pulse hover:animate-none hover:scale-105 transition-all duration-300 ring-2 ring-red-300/50">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-white rounded-full animate-ping"></span>
+                    نفد المخزون
+                  </span>
                 </Badge>
               )}
             </div>

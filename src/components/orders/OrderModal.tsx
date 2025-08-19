@@ -175,9 +175,50 @@ export default function OrderModal({ isOpen, onClose, product, onSubmit }: Order
     }
   }
 
+  const validateCurrentStep = () => {
+    const newErrors: Record<string, string> = {}
+    
+    // Step 1: Product Selection - Size is required
+    if (currentStep === 1) {
+      if (!formData.size.trim()) {
+        newErrors.size = 'الحجم مطلوب / Size is required'
+      }
+    }
+    
+    // Step 2: Customer Information - Name and Phone are required
+    if (currentStep === 2) {
+      if (!formData.customerName.trim()) {
+        newErrors.customerName = 'الاسم مطلوب / Name is required'
+      }
+      
+      if (!formData.phoneNumber.trim()) {
+        newErrors.phoneNumber = 'رقم الهاتف مطلوب / Phone number is required'
+      } else if (!/^(\+213|0)[5-7][0-9]{8}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
+        newErrors.phoneNumber = 'رقم هاتف جزائري صحيح مطلوب / Valid Algerian phone number required'
+      }
+    }
+    
+    // Step 3: Delivery Information - Wilaya and Commune are required
+    if (currentStep === 3) {
+      if (!formData.wilaya) {
+        newErrors.wilaya = 'الولاية مطلوبة / Wilaya is required'
+      }
+      
+      if (!formData.commune.trim()) {
+        newErrors.commune = 'البلدية مطلوبة / Commune is required'
+      }
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const nextStep = () => {
     if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1)
+      // Validate current step before proceeding
+      if (validateCurrentStep()) {
+        setCurrentStep(currentStep + 1)
+      }
     }
   }
 

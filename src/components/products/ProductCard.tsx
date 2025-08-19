@@ -74,8 +74,11 @@ export default function ProductCard({
               )}
               
               {product.stock === 0 && (
-                <Badge className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-lg backdrop-blur-sm px-3 py-1 text-xs font-medium">
-                  نفد المخزون
+                <Badge className="absolute top-4 right-4 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white border-0 shadow-xl backdrop-blur-sm px-4 py-2 text-sm font-bold rounded-full animate-pulse hover:animate-none hover:scale-105 transition-all duration-300 ring-2 ring-red-300/50">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-white rounded-full animate-ping"></span>
+                    نفد المخزون
+                  </span>
                 </Badge>
               )}
               
