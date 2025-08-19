@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Product } from '@/lib/types';
 import ProductCard from './ProductCard';
 import ProductFilters, { FilterState } from './ProductFilters';
@@ -49,6 +49,7 @@ function useProductFilters(products: Product[], filters: FilterState) {
 
 // Main component
 export default function ProductsClient({ initialProducts }: ProductsClientProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: '',
     selectedCategory: 'all',
@@ -57,8 +58,41 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
   
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
-  const filteredProducts = useProductFilters(initialProducts, filters);
+  // Fetch fresh data on component mount and periodically
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsRefreshing(true);
+        const response = await fetch('/api/products', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        if (response.ok) {
+          const freshProducts = await response.json();
+          setProducts(freshProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching fresh products:', error);
+      } finally {
+        setIsRefreshing(false);
+      }
+    };
+
+    // Fetch fresh data immediately
+    fetchProducts();
+
+    // Set up interval to refresh data every 30 seconds
+    const interval = setInterval(fetchProducts, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+  
+  const filteredProducts = useProductFilters(products, filters);
   
   const handleFiltersChange = useCallback((newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -97,9 +131,19 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             مجموعة منتجاتنا
+            {isRefreshing && (
+              <span className="inline-block ml-3 text-sm">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 inline-block"></div>
+              </span>
+            )}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             اكتشفي أحدث صيحات الموضة المحتشمة من مجموعتنا المختارة بعناية
+            {isRefreshing && (
+              <span className="block text-sm text-purple-600 mt-2 font-medium">
+                جاري تحديث المنتجات...
+              </span>
+            )}
           </p>
         </div>
         
@@ -150,4 +194,4 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
       </div>
     </div>
   );
-} 
+}
