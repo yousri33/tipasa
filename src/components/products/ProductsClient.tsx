@@ -39,7 +39,7 @@ function useProductFilters(products: Product[], filters: FilterState) {
           return b.price - a.price;
         case 'name':
         default:
-          return a.name.localeCompare(a.name, 'ar');
+          return a.name?.localeCompare(b.name || '', 'ar') || 0;
       }
     });
 
