@@ -4,12 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Heart, Star, Award, Users, ArrowRight, Sparkles } from 'lucide-react';
+import { ShoppingBag, Heart, Star, Award, Users, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const heroImages = [
     '/background.png',
@@ -93,10 +94,25 @@ export default function HeroSection() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
               <Link href="/products">
-                <Button size="lg" className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
-                  <ShoppingBag className="ml-2 h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
-                  تسوقي الآن
-                  <ArrowRight className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                <Button 
+                  size="lg" 
+                  disabled={isLoading}
+                  onClick={() => {
+                    setIsLoading(true);
+                    // Simulate loading for navigation
+                    setTimeout(() => setIsLoading(false), 1500);
+                  }}
+                  className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {isLoading ? (
+                    <Loader2 className="ml-2 h-6 w-6 animate-spin" />
+                  ) : (
+                    <ShoppingBag className="ml-2 h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                  )}
+                  {isLoading ? 'جاري التحميل...' : 'تسوقي الآن'}
+                  {!isLoading && (
+                    <ArrowRight className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  )}
                 </Button>
               </Link>
             </div>

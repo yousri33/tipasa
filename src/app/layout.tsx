@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { ToastProvider } from "@/components/ui/toast";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Helena Brand - Modest Fashion & Burkinis",
@@ -25,6 +26,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <ToastProvider />
+        <Analytics />
       </body>
     </html>
   );

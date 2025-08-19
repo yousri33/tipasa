@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Heart, Star, Truck, Shield, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Heart, Star, Truck, Shield, RotateCcw, Loader2 } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { formatPrice, getCategoryLabel } from '@/lib/utils';
 import OrderModal, { OrderData } from '../orders/OrderModal';
@@ -19,6 +19,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const [selectedSize, setSelectedSize] = useState(product.size || '');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const features = [
@@ -28,7 +29,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   ];
 
   const handleOrderNow = () => {
-    setIsOrderModalOpen(true);
+    setIsLoading(true);
+    // Simulate loading before opening modal
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsOrderModalOpen(true);
+    }, 800);
   };
 
   const handleOrderSubmit = async (orderData: OrderData) => {
@@ -205,11 +211,20 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <div className="flex gap-4">
               <Button
                 onClick={handleOrderNow}
-                disabled={product.stock === 0}
-                className="flex-1 bg-gradient-to-r from-purple-500 to-rose-600 hover:from-purple-600 hover:to-rose-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                disabled={product.stock === 0 || isLoading}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-rose-600 hover:from-purple-600 hover:to-rose-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               >
-                <Star className="h-5 w-5 ml-2" />
-                اطلبي الآن
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 ml-2 animate-spin" />
+                    جاري التحميل...
+                  </>
+                ) : (
+                  <>
+                    <Star className="h-5 w-5 ml-2" />
+                    اطلبي الآن
+                  </>
+                )}
               </Button>
               
               <Button

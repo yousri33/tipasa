@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Star, Sparkles } from 'lucide-react';
+import { Heart, Sparkles, Loader2, Eye } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
@@ -21,6 +21,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   return (
     <div 
@@ -56,7 +57,7 @@ export default function ProductCard({
               <div className="w-full h-full bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto mb-2 bg-gray-200 rounded-full flex items-center justify-center">
-                    <Star className="h-8 w-8 text-gray-400" />
+                    <Sparkles className="h-8 w-8 text-gray-400" />
                   </div>
                   <span className="text-gray-400 text-sm">لا توجد صورة</span>
                 </div>
@@ -156,21 +157,35 @@ export default function ProductCard({
             <div className="pt-2">
               <Link href={`/products/${product.id}`} className="block">
                 <button
-                  className={`w-full relative overflow-hidden bg-gradient-to-r from-purple-500 via-purple-600 to-rose-600 text-white py-4 px-6 rounded-2xl font-semibold transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 group/btn ${
-                    isHovered ? 'animate-pulse' : ''
-                  }`}
+                  disabled={isLoading}
+                  onClick={(e) => {
+                    if (!isLoading) {
+                      setIsLoading(true);
+                      // Simulate loading for navigation
+                      setTimeout(() => setIsLoading(false), 1500);
+                    }
+                  }}
+                  className={`w-full relative overflow-hidden bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 hover:from-purple-700 hover:via-purple-800 hover:to-indigo-700 text-white py-4 px-6 rounded-2xl font-bold transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-purple-500/30 hover:scale-[1.03] border border-purple-400/30 backdrop-blur-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none group`}
                 >
-                  {/* Button background animation */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-rose-500 via-purple-600 to-purple-700 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                  {/* Animated background overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
                   
-                  {/* Button content */}
-                  <div className="relative flex items-center justify-center gap-2">
-                    <span className="text-lg">عرض المنتج</span>
-                    <Star className="h-5 w-5 group-hover/btn:rotate-12 transition-transform duration-300" />
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-400/20 to-indigo-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative flex items-center justify-center gap-2.5">
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span className="text-lg tracking-wide">جاري التحميل...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                        <span className="text-lg tracking-wide">عرض المنتج</span>
+                      </>
+                    )}
                   </div>
-                  
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 -top-2 -left-2 w-4 h-full bg-white/20 rotate-12 transform -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-out" />
                 </button>
               </Link>
             </div>

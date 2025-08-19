@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { ArrowRight, ShoppingBag } from 'lucide-react';
+import { ArrowRight, ShoppingBag, Loader2 } from 'lucide-react';
 import { preloadCategoryImages } from '@/lib/airtable-images';
 
 interface Category {
@@ -16,6 +16,7 @@ interface Category {
 
 export default function FeaturedCategories() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const featuredCategories: Category[] = [
     {
@@ -115,12 +116,28 @@ export default function FeaturedCategories() {
         
         {/* View All Button */}
         <div className="text-center">
-          <Link
-            href="/products"
-            className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors duration-300"
-          >
-            <span>عرض جميع الفئات</span>
-            <ArrowRight className="mr-2 h-4 w-4" />
+          <Link href="/products">
+            <button
+              disabled={isLoading}
+              onClick={() => {
+                setIsLoading(true);
+                // Simulate loading for navigation
+                setTimeout(() => setIsLoading(false), 1200);
+              }}
+              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span>جاري التحميل...</span>
+                </>
+              ) : (
+                <>
+                  <span>عرض جميع الفئات</span>
+                  <ArrowRight className="mr-2 h-4 w-4" />
+                </>
+              )}
+            </button>
           </Link>
         </div>
       </div>
