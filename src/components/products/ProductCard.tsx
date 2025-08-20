@@ -11,23 +11,19 @@ import { formatPrice, getCategoryLabel } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
-  onQuickView: (product: Product) => void;
   onAddToCart?: (product: Product) => void;
 }
 
 export default function ProductCard({ 
-  product, 
-  onQuickView 
+  product
 }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
   return (
     <div 
       className="group relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+
     >
       <Card className="relative overflow-hidden bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-700 hover:-translate-y-3 hover:rotate-1">
         {/* Animated gradient background */}
@@ -161,7 +157,7 @@ export default function ProductCard({
               <Link href={`/products/${product.id}`} className="block">
                 <button
                   disabled={isLoading}
-                  onClick={(e) => {
+                  onClick={() => {
                     if (!isLoading) {
                       setIsLoading(true);
                       // Simulate loading for navigation

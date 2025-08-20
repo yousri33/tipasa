@@ -5,7 +5,6 @@ import { Product } from '@/lib/types';
 import ProductCard from './ProductCard';
 import ProductFilters, { FilterState } from './ProductFilters';
 import OrderModal, { OrderData } from '../orders/OrderModal';
-import Link from 'next/link';
 
 interface ProductsClientProps {
   initialProducts: Product[];
@@ -107,7 +106,7 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
     window.location.href = `/products/${product.id}`;
   }, []);
   
-  const handleOrderSubmit = useCallback(async (orderData: OrderData) => {
+  const handleOrderSubmit = useCallback(async () => {
     try {
       // Here you would typically send the order to your backend
       // console.log('Order submitted:', orderData);
@@ -178,7 +177,6 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
-                onQuickView={handleQuickView}
               />
             ))}
           </div>

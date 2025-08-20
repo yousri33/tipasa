@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
           { error: 'Failed to create order in Airtable', details: errorJson },
           { status: 500 }
         )
-      } catch (parseError) {
+      } catch {
         // If parsing fails, return the raw error text
         return NextResponse.json(
           { error: 'Failed to create order in Airtable', details: errorText },

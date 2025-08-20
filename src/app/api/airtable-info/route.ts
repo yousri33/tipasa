@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY
 const AIRTABLE_BASE_ID = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('🔍 Airtable Info API called')
     
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
           { error: 'Failed to access Airtable base info', details: errorJson },
           { status: 500 }
         )
-      } catch (parseError) {
+      } catch {
         // If parsing fails, return the raw error text
         return NextResponse.json(
           { error: 'Failed to access Airtable base info', details: errorText },

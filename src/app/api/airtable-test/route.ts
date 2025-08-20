@@ -4,7 +4,7 @@ const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY
 const AIRTABLE_BASE_ID = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 const AIRTABLE_TABLE_ID = process.env.NEXT_PUBLIC_ORDERS_TABLE_ID // Order Details table
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('🧪 Airtable Test API called')
     
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
           { error: 'Failed to create test record in Airtable', details: errorJson },
           { status: 500 }
         )
-      } catch (parseError) {
+      } catch {
         // If parsing fails, return the raw error text
         return NextResponse.json(
           { error: 'Failed to create test record in Airtable', details: errorText },

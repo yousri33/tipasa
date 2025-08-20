@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
+
 import { Menu, Phone, Facebook, Instagram, Loader2 } from 'lucide-react';
 
 export default function Header() {
@@ -131,7 +131,7 @@ export default function Header() {
                     
                     {/* Navigation */}
                     <nav className="flex flex-col space-y-2 px-4 md:px-6">
-                      {navigation.map((item, index) => (
+                      {navigation.map((item) => (
                         <Link
                           key={item.name}
                           href={item.href}

@@ -8,7 +8,7 @@ import { ArrowLeft, Heart, Star, Truck, Shield, RotateCcw, Loader2, ChevronLeft,
 import { Product } from '@/lib/types';
 import { formatPrice, getCategoryLabel } from '@/lib/utils';
 import OrderModal, { OrderData } from '../orders/OrderModal';
-import Link from 'next/link';
+
 import { toast } from '@/components/ui/toast';
 
 interface ProductDetailClientProps {
@@ -16,7 +16,7 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
-  const [selectedSize, setSelectedSize] = useState(product.size || '');
+  const [selectedSize] = useState(product.size || '');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [allImages.length]);
 
-  const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const features = [
     { icon: Shield, title: 'جودة عالية', description: 'منسوجات ممتازة تدوم طويلاً' },
     { icon: Truck, title: 'شحن مجاني', description: 'للطلبات فوق 7000 دينار' },

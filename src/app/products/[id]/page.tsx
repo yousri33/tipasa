@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { getProductById } from '@/lib/airtable';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import { notFound } from 'next/navigation';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { MapPin, Phone, User, Truck, Building, Ruler, CheckCircle, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
+import { MapPin, Phone, User, Truck, Building, Ruler, CheckCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 
