@@ -5,10 +5,30 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
-import { Menu, Search, Phone } from 'lucide-react';
+import { Menu, Phone, Facebook, Instagram, Loader2 } from 'lucide-react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [loadingFacebook, setLoadingFacebook] = useState(false);
+  const [loadingInstagram, setLoadingInstagram] = useState(false);
+
+  const handleSocialClick = (platform: 'facebook' | 'instagram', url: string) => {
+    if (platform === 'facebook') {
+      setLoadingFacebook(true);
+    } else {
+      setLoadingInstagram(true);
+    }
+    
+    // Simulate loading state for 1.5 seconds before opening the link
+    setTimeout(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      if (platform === 'facebook') {
+        setLoadingFacebook(false);
+      } else {
+        setLoadingInstagram(false);
+      }
+    }, 1500);
+  };
 
 
 
@@ -25,7 +45,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/70">
       {/* Top bar with contact info */}
       <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white py-1 md:py-2 shadow-lg relative overflow-hidden">
         {/* Animated background overlay */}
@@ -64,7 +84,7 @@ export default function Header() {
         <div className="flex h-12 md:h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent group-hover:from-rose-600 group-hover:to-purple-700 transition-all duration-300">
+            <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-rose-500 via-purple-600 to-rose-500 bg-clip-text text-transparent group-hover:from-rose-600 group-hover:via-purple-700 group-hover:to-rose-600 transition-all duration-300 drop-shadow-sm">
               Helena Brand
             </div>
           </Link>
@@ -75,25 +95,16 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-medium text-gray-700 hover:text-rose-600 transition-colors duration-200 relative group"
+                className="text-sm font-semibold text-gray-700 hover:text-rose-600 transition-all duration-300 relative group px-3 py-2 rounded-xl hover:bg-white/60 backdrop-blur-sm"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-rose-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-rose-500 to-purple-600 group-hover:w-3/4 transition-all duration-300 rounded-full"></span>
               </Link>
             ))}
           </nav>
 
           {/* Right side actions */}
           <div className="flex items-center gap-2 md:gap-4">
-            {/* Search */}
-            <div className="hidden md:flex items-center gap-1 md:gap-2 bg-gray-100 rounded-full px-3 md:px-4 py-1.5 md:py-2 hover:bg-gray-200 transition-colors duration-200">
-              <Search className="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-500" />
-              <input
-                type="text"
-                placeholder="ابحثي عن منتج..."
-                className="bg-transparent border-none outline-none text-xs md:text-sm text-gray-700 placeholder-gray-500 w-28 md:w-32"
-              />
-            </div>
 
 
 
@@ -106,51 +117,76 @@ export default function Header() {
                     <span className="sr-only">Menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[280px] sm:w-[350px] bg-white">
+                <SheetContent side="right" className="w-[320px] sm:w-[380px] bg-gradient-to-br from-white via-gray-50 to-purple-50/30 backdrop-blur-xl border-l border-gray-200/50 shadow-2xl">
                   <SheetTitle className="sr-only">قائمة التنقل</SheetTitle>
                   <div className="flex flex-col h-full">
                     {/* Header */}
-                    <div className="flex items-center justify-center py-4 md:py-6 border-b border-gray-100">
-                      <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent">
+                    <div className="flex items-center justify-center py-6 md:py-8">
+                      <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-rose-500 via-purple-600 to-rose-500 bg-clip-text text-transparent drop-shadow-sm">
                         Helena Brand
                       </div>
                     </div>
                     
-                    {/* Search in mobile menu */}
-                    <div className="p-3 md:p-4 border-b border-gray-100">
-                      <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 md:px-4 py-1.5 md:py-2">
-                        <Search className="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-500" />
-                        <input
-                          type="text"
-                          placeholder="ابحثي عن منتج..."
-                          className="bg-transparent border-none outline-none text-xs md:text-sm text-gray-700 placeholder-gray-500 flex-1"
-                        />
-                      </div>
-                    </div>
+
                     
                     {/* Navigation */}
-                    <nav className="flex flex-col space-y-1 md:space-y-2 mt-4 md:mt-6 px-2">
-                      {navigation.map((item) => (
+                    <nav className="flex flex-col space-y-2 px-4 md:px-6">
+                      {navigation.map((item, index) => (
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="text-base md:text-lg font-medium text-gray-700 hover:text-rose-600 hover:bg-rose-50 transition-all duration-200 py-2 md:py-3 px-3 md:px-4 rounded-lg"
+                          className="group relative text-base md:text-lg font-semibold text-gray-700 hover:text-white transition-all duration-300 py-3 md:py-4 px-4 md:px-6 rounded-2xl hover:bg-gradient-to-r hover:from-rose-500 hover:to-purple-600 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] backdrop-blur-sm border border-transparent hover:border-white/20"
                           onClick={() => setIsOpen(false)}
                           aria-label={item.ariaLabel}
                         >
-                          {item.name}
+                          <span className="relative z-10">{item.name}</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-purple-600/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </Link>
                       ))}
                     </nav>
                     
-                    {/* Mobile actions */}
-                    <div className="mt-6 px-2 space-y-2">
-
+                    {/* Social Media Section */}
+                    <div className="mt-8 px-4 md:px-6">
+                      <div className="bg-gradient-to-r from-purple-500 to-rose-500 rounded-2xl p-4 md:p-6 text-white shadow-xl">
+                        <h3 className="font-bold text-lg mb-4">تابعينا على</h3>
+                        <div className="flex items-center gap-4">
+                          <button 
+                            onClick={() => handleSocialClick('facebook', 'https://www.facebook.com/profile.php?id=61555613117953')}
+                            disabled={loadingFacebook}
+                            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 disabled:bg-white/10 disabled:cursor-not-allowed px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:opacity-70"
+                            aria-label="Facebook"
+                          >
+                            {loadingFacebook ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <Facebook className="h-5 w-5" />
+                            )}
+                            <span className="text-sm font-medium">
+                              {loadingFacebook ? 'جاري التحميل...' : 'Facebook'}
+                            </span>
+                          </button>
+                          <button 
+                            onClick={() => handleSocialClick('instagram', 'https://www.instagram.com/helena__brand_/')}
+                            disabled={loadingInstagram}
+                            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 disabled:bg-white/10 disabled:cursor-not-allowed px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:opacity-70"
+                            aria-label="Instagram"
+                          >
+                            {loadingInstagram ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <Instagram className="h-5 w-5" />
+                            )}
+                            <span className="text-sm font-medium">
+                              {loadingInstagram ? 'جاري التحميل...' : 'Instagram'}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     
                     {/* Footer */}
                     <div className="mt-auto mb-6 px-6">
-                      <div className="text-center text-sm text-gray-400">
+                      <div className="text-center text-sm text-gray-500 font-medium">
                         © 2024 Helena Brand
                       </div>
                     </div>

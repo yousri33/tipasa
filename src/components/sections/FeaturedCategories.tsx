@@ -73,7 +73,7 @@ export default function FeaturedCategories() {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {featuredCategories.map((category, index) => (
             <Link key={index} href={category.href}>
-              <div className="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-lg transition-all duration-300">
+              <div className="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-lg transition-all duration-300 active:shadow-inner active:translate-y-1 hover:-translate-y-1">
                 {/* Image Container */}
                 <div className="relative h-64 overflow-hidden">
                   {(imagesLoaded && category.image !== '/api/placeholder/400/300') || category.image === '/MODEST.JPG' || category.image === '/BURKINI.png' ? (
@@ -124,7 +124,7 @@ export default function FeaturedCategories() {
                 // Simulate loading for navigation
                 setTimeout(() => setIsLoading(false), 1200);
               }}
-              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed active:shadow-inner active:translate-y-1 hover:-translate-y-1"
             >
               {isLoading ? (
                 <>
