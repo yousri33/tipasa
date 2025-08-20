@@ -1,5 +1,6 @@
 'use client';
 
+// Minimal change for redeployment - 2025
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
